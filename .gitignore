@@ -2,7 +2,6 @@
 CDDB/
 
 # Cache and embeddings
-clip_embeddings/
 *.npz
 __pycache__/
 *.pyc
