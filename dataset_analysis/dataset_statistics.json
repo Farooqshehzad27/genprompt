@@ -1,0 +1,145 @@
+[
+  {
+    "domain": "biggan",
+    "has_subdomains": false,
+    "subdomains": [],
+    "train_real": 1200,
+    "train_fake": 1200,
+    "val_real": 400,
+    "val_fake": 400,
+    "total": 3200
+  },
+  {
+    "domain": "crn",
+    "has_subdomains": false,
+    "subdomains": [],
+    "train_real": 3829,
+    "train_fake": 3829,
+    "val_real": 1276,
+    "val_fake": 1276,
+    "total": 10210
+  },
+  {
+    "domain": "cyclegan",
+    "has_subdomains": true,
+    "subdomains": [
+      "apple",
+      "horse",
+      "orange",
+      "summer",
+      "winter",
+      "zebra"
+    ],
+    "train_real": 786,
+    "train_fake": 786,
+    "val_real": 262,
+    "val_fake": 262,
+    "total": 2096
+  },
+  {
+    "domain": "deepfake",
+    "has_subdomains": false,
+    "subdomains": [],
+    "train_real": 1624,
+    "train_fake": 1624,
+    "val_real": 541,
+    "val_fake": 541,
+    "total": 4330
+  },
+  {
+    "domain": "gaugan",
+    "has_subdomains": false,
+    "subdomains": [],
+    "train_real": 3000,
+    "train_fake": 3000,
+    "val_real": 1000,
+    "val_fake": 1000,
+    "total": 8000
+  },
+  {
+    "domain": "glow",
+    "has_subdomains": true,
+    "subdomains": [
+      "black_hair",
+      "blond_hair",
+      "brown_hair",
+      "male",
+      "smiling"
+    ],
+    "train_real": 3600,
+    "train_fake": 3600,
+    "val_real": 2400,
+    "val_fake": 2400,
+    "total": 12000
+  },
+  {
+    "domain": "imle",
+    "has_subdomains": false,
+    "subdomains": [],
+    "train_real": 3828,
+    "train_fake": 3828,
+    "val_real": 1276,
+    "val_fake": 1276,
+    "total": 10208
+  },
+  {
+    "domain": "san",
+    "has_subdomains": false,
+    "subdomains": [],
+    "train_real": 130,
+    "train_fake": 130,
+    "val_real": 45,
+    "val_fake": 45,
+    "total": 350
+  },
+  {
+    "domain": "stargan_gf",
+    "has_subdomains": true,
+    "subdomains": [
+      "black_hair",
+      "blond_hair",
+      "brown_hair",
+      "male",
+      "smiling"
+    ],
+    "train_real": 3600,
+    "train_fake": 3600,
+    "val_real": 2400,
+    "val_fake": 2400,
+    "total": 12000
+  },
+  {
+    "domain": "stylegan",
+    "has_subdomains": true,
+    "subdomains": [
+      "bedroom",
+      "car",
+      "cat"
+    ],
+    "train_real": 3594,
+    "train_fake": 3594,
+    "val_real": 1197,
+    "val_fake": 1197,
+    "total": 9582
+  },
+  {
+    "domain": "whichfaceisreal",
+    "has_subdomains": false,
+    "subdomains": [],
+    "train_real": 600,
+    "train_fake": 600,
+    "val_real": 200,
+    "val_fake": 200,
+    "total": 1600
+  },
+  {
+    "domain": "wild",
+    "has_subdomains": false,
+    "subdomains": [],
+    "train_real": 3115,
+    "train_fake": 3093,
+    "val_real": 1019,
+    "val_fake": 1044,
+    "total": 8271
+  }
+]
