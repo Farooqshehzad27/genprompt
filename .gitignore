@@ -1,2 +1,32 @@
-CDDB
+# Dataset
+CDDB/
 
+# Cache and embeddings
+clip_embeddings/
+*.npz
+__pycache__/
+*.pyc
+*.pyo
+
+# Experiments and outputs
+experiments/
+dataset_analysis/
+domain_discovery/
+checkpoints/
+logs/
+runs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+*.egg-info/
+dist/
+build/
