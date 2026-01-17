@@ -137,11 +137,12 @@ class GenPromptTrainer:
             prototype_momentum=0.9
         ).to(self.device)
         
-        # Optimizers
-        self.optimizer_prompts = torch.optim.Adam(
-            self.prompt_pool.parameters(),
-            lr=lr_prompts
-        )
+        # Store learning rates for later optimizer initialization
+        self.lr_prompts = lr_prompts
+        self.lr_router = lr_router
+        
+        # Optimizers (will be initialized after first prompt allocation)
+        self.optimizer_prompts = None
         self.optimizer_router = torch.optim.Adam(
             self.prn.parameters(),
             lr=lr_router
@@ -224,6 +225,14 @@ class GenPromptTrainer:
             else:
                 prompt_id = self.prompt_pool.get_prompt_for_cluster(cluster_id)
                 print(f"  Cluster {cluster_id} -> Prompt {prompt_id} (existing)")
+        
+        # Initialize prompt optimizer after first allocation
+        if self.optimizer_prompts is None and self.prompt_pool.n_prompts > 0:
+            print("Initializing prompt optimizer...")
+            self.optimizer_prompts = torch.optim.Adam(
+                self.prompt_pool.parameters(),
+                lr=self.lr_prompts
+            )
     
     def train_epoch(
         self,
@@ -251,10 +260,17 @@ class GenPromptTrainer:
             # Get CLIP embeddings for this batch
             batch_embeddings = self.clip_encoder.encode_images(images, normalize=True)
             
+            # Convert to float32 if needed (CLIP ViT-L/14 uses float16)
+            if batch_embeddings.dtype != torch.float32:
+                batch_embeddings = batch_embeddings.float()
+            
             # Get cluster assignments for this batch
             start_idx = batch_idx * self.batch_size
             end_idx = start_idx + len(images)
             batch_clusters = cluster_assignments[start_idx:end_idx]
+            
+            # Move to device
+            batch_clusters = batch_clusters.to(self.device)
             
             # Forward pass through PRN
             logits, routing_weights, expert_logits = self.prn(batch_embeddings)
@@ -272,10 +288,12 @@ class GenPromptTrainer:
             loss = self.lambda_cls * cls_loss + self.lambda_con * con_loss
             
             # Backward pass
-            self.optimizer_prompts.zero_grad()
+            if self.optimizer_prompts is not None:
+                self.optimizer_prompts.zero_grad()
             self.optimizer_router.zero_grad()
             loss.backward()
-            self.optimizer_prompts.step()
+            if self.optimizer_prompts is not None:
+                self.optimizer_prompts.step()
             self.optimizer_router.step()
             
             # Update prototypes
@@ -330,6 +348,10 @@ class GenPromptTrainer:
             
             # Get CLIP embeddings
             batch_embeddings = self.clip_encoder.encode_images(images, normalize=True)
+            
+            # Convert to float32 if needed
+            if batch_embeddings.dtype != torch.float32:
+                batch_embeddings = batch_embeddings.float()
             
             # Forward pass
             logits, routing_weights, expert_logits = self.prn(batch_embeddings)
@@ -430,15 +452,19 @@ class GenPromptTrainer:
         
         checkpoint_path = checkpoint_dir / f'checkpoint_{domain_name}.pt'
         
-        torch.save({
+        checkpoint = {
             'domain_name': domain_name,
             'seen_domains': self.seen_domains,
             'prompt_pool': self.prompt_pool.state_dict(),
             'prn': self.prn.state_dict(),
             'cluster_to_domain': self.cluster_to_domain,
-            'optimizer_prompts': self.optimizer_prompts.state_dict(),
             'optimizer_router': self.optimizer_router.state_dict()
-        }, checkpoint_path)
+        }
+        
+        if self.optimizer_prompts is not None:
+            checkpoint['optimizer_prompts'] = self.optimizer_prompts.state_dict()
+        
+        torch.save(checkpoint, checkpoint_path)
         
         print(f"\n✓ Checkpoint saved: {checkpoint_path}")
     
